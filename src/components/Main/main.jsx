@@ -13,17 +13,15 @@ import TranscribeComponent from "./transcribe";
 
 function Main({ isDarkMode, activeTab, setActiveTab }) {
   return (
-    <main className="container mx-auto px-4 py-8 flex-grow">
-      <Card
-        className={`mb-12 ${isDarkMode ? "bg-[#1c1c1c] text-gray-100" : ""}`}
-      >
+    <main className="container mx-auto px-4 py-8 flex-grow flex flex-col space-y-6">
+      <Card className={`${isDarkMode ? "bg-[#1c1c1c] text-gray-100" : ""}`}>
         <CardHeader>
           <CardTitle>Video Downloader and Converter</CardTitle>
           <CardDescription className={isDarkMode ? "text-gray-400" : ""}>
             Download videos, convert files, and generate transcripts
           </CardDescription>
         </CardHeader>
-        <CardContent className="min-h-[200px]"> {/* Set a fixed minimum height */}
+        <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList
               className={`grid w-full grid-cols-3 ${
@@ -61,7 +59,9 @@ function Main({ isDarkMode, activeTab, setActiveTab }) {
           </Tabs>
         </CardContent>
       </Card>
-
+      
+      {/* //! This will push the second card to the bottom */}
+      <div className="flex-grow"></div>{" "}
       <Card className={isDarkMode ? "bg-[#1c1c1c] text-gray-100" : ""}>
         <CardHeader>
           <CardTitle>FAQ</CardTitle>
