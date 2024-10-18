@@ -64,3 +64,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes move-bg {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-move-bg {
+  animation: move-bg 3s linear infinite;
+}
