@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import {
   Card,
@@ -10,8 +10,17 @@ import {
 import DownloadComponent from "./download";
 import ConvertComponent from "./convert";
 import TranscribeComponent from "./transcribe";
+import Faq from "./faq";
 
 function Main({ isDarkMode, activeTab, setActiveTab }) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleTabChange = (newTab) => {
+    if (!isLoading) {
+      setActiveTab(newTab);
+    }
+  };
+
   return (
     <main className="container mx-auto px-4 py-8 flex-grow flex flex-col space-y-6">
       <Card className={`${isDarkMode ? "bg-[#1c1c1c] text-gray-100" : ""}`}>
@@ -22,7 +31,7 @@ function Main({ isDarkMode, activeTab, setActiveTab }) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <Tabs value={activeTab} onValueChange={handleTabChange}>
             <TabsList
               className={`grid w-full grid-cols-3 ${
                 isDarkMode ? "bg-[#2c2c2c]" : ""
@@ -30,73 +39,59 @@ function Main({ isDarkMode, activeTab, setActiveTab }) {
             >
               <TabsTrigger
                 value="download"
+                disabled={isLoading}
                 className={isDarkMode ? "data-[state=active]:bg-[#3c3c3c]" : ""}
               >
                 Download
               </TabsTrigger>
               <TabsTrigger
                 value="convert"
+                disabled={isLoading}
                 className={isDarkMode ? "data-[state=active]:bg-[#3c3c3c]" : ""}
               >
                 Convert
               </TabsTrigger>
               <TabsTrigger
                 value="transcribe"
+                disabled={isLoading}
                 className={isDarkMode ? "data-[state=active]:bg-[#3c3c3c]" : ""}
               >
                 Transcribe
               </TabsTrigger>
             </TabsList>
             <TabsContent value="download">
-              <DownloadComponent isDarkMode={isDarkMode} />
+              <DownloadComponent
+                isDarkMode={isDarkMode}
+                setIsLoading={setIsLoading}
+              />
             </TabsContent>
             <TabsContent value="convert">
-              <ConvertComponent isDarkMode={isDarkMode} />
+              <ConvertComponent
+                isDarkMode={isDarkMode}
+                setIsLoading={setIsLoading}
+              />
             </TabsContent>
             <TabsContent value="transcribe">
-              <TranscribeComponent isDarkMode={isDarkMode} />
+              <TranscribeComponent
+                isDarkMode={isDarkMode}
+                setIsLoading={setIsLoading}
+              />
             </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
-      
-      {/* //! This will push the second card to the bottom */}
-      <div className="flex-grow"></div>{" "}
-      <Card className={isDarkMode ? "bg-[#1c1c1c] text-gray-100" : ""}>
-        <CardHeader>
-          <CardTitle>FAQ</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div>
-              <h3 className="font-semibold">How do I download a video?</h3>
-              <p className={isDarkMode ? "text-gray-300" : ""}>
-                Simply paste the video URL into the input field and click the
-                Download button.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold">
-                What file formats are supported for conversion?
-              </h3>
-              <p className={isDarkMode ? "text-gray-300" : ""}>
-                We support a wide range of video and audio formats. You can
-                convert to MP4, MP3, WAV, and more.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold">
-                How accurate are the generated transcripts?
-              </h3>
-              <p className={isDarkMode ? "text-gray-300" : ""}>
-                Our transcription service uses advanced AI to provide highly
-                accurate results, but may not be perfect for all accents or
-                audio qualities.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {isLoading && (
+        <div
+          className={`text-center ${
+            isDarkMode ? "text-gray-300" : "text-gray-700"
+          }`}
+        >
+          Loading... Please wait while we process your request.
+        </div>
+      )}
+      {/* This will push the second card to the bottom */}
+      <div className="flex-grow"></div>
+      <Faq isDarkMode={isDarkMode} />
     </main>
   );
 }
