@@ -7,10 +7,10 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import DownloadComponent from "./download";
-import ConvertComponent from "./convert";
-import TranscribeComponent from "./transcribe";
-import Faq from "./faq";
+import DownloadComponent from "./Download/Download";
+import ConvertComponent from "./Convert/Convert";
+import TranscribeComponent from "./Transcribe/Transcribe";
+import Faq from "./Faq";
 
 function Main({ isDarkMode, activeTab, setActiveTab }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,10 +22,10 @@ function Main({ isDarkMode, activeTab, setActiveTab }) {
   };
 
   return (
-    <main className="container mx-auto px-4 py-8 flex-grow flex flex-col space-y-6">
+    <main className="container px-4 sm:px-6 lg:px-2 max-w-7xl mx-auto py-8 flex-grow flex flex-col space-y-6">
       <Card className={`${isDarkMode ? "bg-[#1c1c1c] text-gray-100" : ""}`}>
         <CardHeader>
-          <CardTitle>Video Downloader and Converter</CardTitle>
+          <CardTitle>Video Downloader, Converter, and Transcriber</CardTitle>
           <CardDescription className={isDarkMode ? "text-gray-400" : ""}>
             Download videos, convert files, and generate transcripts
           </CardDescription>
@@ -62,18 +62,21 @@ function Main({ isDarkMode, activeTab, setActiveTab }) {
             <TabsContent value="download">
               <DownloadComponent
                 isDarkMode={isDarkMode}
+                isLoading={isLoading}
                 setIsLoading={setIsLoading}
               />
             </TabsContent>
             <TabsContent value="convert">
               <ConvertComponent
                 isDarkMode={isDarkMode}
+                isLoading={isLoading}
                 setIsLoading={setIsLoading}
               />
             </TabsContent>
             <TabsContent value="transcribe">
               <TranscribeComponent
                 isDarkMode={isDarkMode}
+                isLoading={isLoading}
                 setIsLoading={setIsLoading}
               />
             </TabsContent>
@@ -89,7 +92,6 @@ function Main({ isDarkMode, activeTab, setActiveTab }) {
           Loading... Please wait while we process your request.
         </div>
       )}
-      {/* This will push the second card to the bottom */}
       <div className="flex-grow"></div>
       <Faq isDarkMode={isDarkMode} />
     </main>

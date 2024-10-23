@@ -1,16 +1,16 @@
 import React, { useState, useCallback } from "react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "../../ui/select";
 import { Plus, ArrowRight, Upload } from "lucide-react";
-import FileList from "./fileList";
+import FileList from "./FileList";
 
 function Convert({ isDarkMode }) {
   const [files, setFiles] = useState([]);

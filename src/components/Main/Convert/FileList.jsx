@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "../../ui/select";
 import { X, File } from "lucide-react";
 
 function FileList({ files, setFiles, isDarkMode }) {
