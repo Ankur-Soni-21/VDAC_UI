@@ -1,26 +1,32 @@
-import React from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../ui/select";
-import { X, File } from "lucide-react";
+import React, { useState } from "react";
+import { X, File, ChevronDown } from "lucide-react";
+import SelectMenu from "./SelectMenu";
 
 function FileList({ files, setFiles, isDarkMode }) {
+  const [activeFileIndex, setActiveFileIndex] = useState(null);
+
   const removeFile = (index) => {
     setFiles(files.filter((_, i) => i !== index));
+    setActiveFileIndex(null);
+  };
+
+  const handleFormatSelect = (index, format) => {
+    const updatedFiles = [...files];
+    updatedFiles[index].convertTo = format;
+    setFiles(updatedFiles);
+    setActiveFileIndex(null);
+  };
+
+  const handleClickOutside = () => {
+    setActiveFileIndex(null);
   };
 
   return (
-    <div
-      className={`rounded-md ${isDarkMode ? "bg-[#2c2c2c]" : "bg-gray-100"}`}
-    >
+    <div className={`rounded-md ${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`}>
       {files.map((file, index) => (
         <div
           key={index}
-          className={`flex items-center justify-between p-3 ${
+          className={`relative flex items-center justify-between p-3 ${
             index > 0 ? "border-t" : ""
           } ${isDarkMode ? "border-gray-700" : "border-gray-200"}`}
         >
@@ -50,23 +56,21 @@ function FileList({ files, setFiles, isDarkMode }) {
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <Select>
-              <SelectTrigger
-                className={`w-[100px] ${
-                  isDarkMode ? "bg-[#3c3c3c] text-gray-100" : ""
-                }`}
-              >
-                <SelectValue placeholder="..." />
-              </SelectTrigger>
-              <SelectContent
-                className={isDarkMode ? "bg-[#3c3c3c] text-gray-100" : ""}
-              >
-                <SelectItem value="pdf">PDF</SelectItem>
-                <SelectItem value="doc">DOC</SelectItem>
-                <SelectItem value="jpg">JPG</SelectItem>
-                <SelectItem value="png">PNG</SelectItem>
-              </SelectContent>
-            </Select>
+            <button
+              onClick={() =>
+                setActiveFileIndex(activeFileIndex === index ? null : index)
+              }
+              className={`px-3 py-1 rounded flex items-center ${
+                isDarkMode
+                  ? "bg-gray-700 text-gray-100"
+                  : "bg-gray-200 text-gray-800"
+              }`}
+            >
+              <span className="mr-2">
+                {file.convertTo ? file.convertTo.toUpperCase() : "..."}
+              </span>
+              <ChevronDown className="h-4 w-4" />
+            </button>
             <button
               onClick={() => removeFile(index)}
               className={`p-1 rounded-full ${
@@ -76,6 +80,15 @@ function FileList({ files, setFiles, isDarkMode }) {
               <X className="h-4 w-4" />
             </button>
           </div>
+          {activeFileIndex === index && (
+            <div className="absolute right-0 top-full mt-2 z-10">
+              <SelectMenu
+                onFormatSelect={(format) => handleFormatSelect(index, format)}
+                onClickOutside={handleClickOutside}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+          )}
         </div>
       ))}
     </div>

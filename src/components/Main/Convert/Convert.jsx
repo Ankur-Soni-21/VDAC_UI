@@ -1,20 +1,12 @@
 import React, { useState, useCallback } from "react";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
-import { Label } from "../../ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../ui/select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Plus, ArrowRight, Upload } from "lucide-react";
 import FileList from "./FileList";
 
 function Convert({ isDarkMode }) {
   const [files, setFiles] = useState([]);
-  const [convertTo, setConvertTo] = useState("");
   const [isDragging, setIsDragging] = useState(false);
 
   const handleFileChange = (newFiles) => {
@@ -22,12 +14,13 @@ function Convert({ isDarkMode }) {
       name: file.name,
       size: file.size,
       type: file.type,
+      convertTo: "",
     }));
     setFiles([...files, ...processedFiles]);
   };
 
   const handleConvert = () => {
-    console.log("Converting files:", files, "to", convertTo);
+    console.log("Converting files:", files);
   };
 
   const handleDragEnter = useCallback((e) => {
@@ -56,7 +49,7 @@ function Convert({ isDarkMode }) {
   }, []);
 
   return (
-    <div className="space-y-6 mt-4">
+    <div className="space-y-6 mt-6">
       {files.length === 0 ? (
         <div
           className={`flex flex-col items-center justify-center space-y-4 p-12 border-2 border-dashed rounded-lg transition-colors ${
@@ -91,18 +84,18 @@ function Convert({ isDarkMode }) {
           </Button>
         </div>
       ) : (
-        <div className="flex justify-between items-end">
-          <div className="space-y-2">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end space-y-4 sm:space-y-0">
+          <div className="space-y-2 w-full sm:w-auto">
             <Label
               htmlFor="file-upload"
-              className={isDarkMode ? "text-gray-300" : ""}
+              className={isDarkMode ? "text-gray-300 mr-4" : "mr-4"}
             >
               Upload Files
             </Label>
             <Button
               onClick={() => document.getElementById("file-upload").click()}
-              className={`${
-                isDarkMode ? "bg-[#3c3c3c] hover:bg-[#4c4c4c] ml-4" : "ml-4"
+              className={`w-full  sm:w-auto ${
+                isDarkMode ? "bg-[#3c3c3c] hover:bg-[#4c4c4c]" : ""
               }`}
             >
               <Plus className="mr-2 h-4 w-4" />
@@ -110,36 +103,16 @@ function Convert({ isDarkMode }) {
             </Button>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <Select onValueChange={setConvertTo}>
-              <SelectTrigger
-                className={`w-[180px] ${
-                  isDarkMode ? "bg-[#2c2c2c] text-gray-100" : ""
-                }`}
-              >
-                <SelectValue placeholder="Convert all to" />
-              </SelectTrigger>
-              <SelectContent
-                className={isDarkMode ? "bg-[#2c2c2c] text-gray-100" : ""}
-              >
-                <SelectItem value="pdf">PDF</SelectItem>
-                <SelectItem value="doc">DOC</SelectItem>
-                <SelectItem value="jpg">JPG</SelectItem>
-                <SelectItem value="png">PNG</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Button
-              onClick={handleConvert}
-              className={`${
-                isDarkMode
-                  ? "bg-red-600 hover:bg-red-700"
-                  : "bg-red-500 hover:bg-red-600"
-              } text-white`}
-            >
-              Convert <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
+          <Button
+            onClick={handleConvert}
+            className={`w-full sm:w-auto ${
+              isDarkMode
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-red-500 hover:bg-red-600"
+            } text-white`}
+          >
+            Convert <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
         </div>
       )}
 
