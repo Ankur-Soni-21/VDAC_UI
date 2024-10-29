@@ -81,7 +81,9 @@ class FileUtil {
     getCommonCategories(files) {
         if (files.length === 0) return [];
         const allCategories = files.map(file => {
-            let fileType = file.name.split('.').pop().toUpperCase();
+            const regex = /(?:\.([^.]+))?$/;
+            const match = regex.exec(file.name);
+            let fileType = match ? match[1].toUpperCase() : "Unknown";
             return this.getFileCategory(fileType);
         });
         // console.log(allCategories)
@@ -93,6 +95,6 @@ class FileUtil {
         return commonCategories || [];
     }
 }
-// const fileUtil = new FileUtil();
-// console.log(fileUtil.getCommonCategories( [{ name: 'file.pptx' }]));
+const fileUtil = new FileUtil();
+console.log(fileUtil.getCommonCategories( [{ name: 'file.pptx' }]));
 export default FileUtil;

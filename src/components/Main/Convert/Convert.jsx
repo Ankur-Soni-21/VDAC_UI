@@ -1,5 +1,11 @@
 // Convert.jsx
-import React, { useState, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+  useEffect,
+} from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import FileUpload from "./FileUpload";
@@ -7,6 +13,8 @@ import DragAndDrop from "./DragAndDrop";
 import FileList from "./FileList";
 import FileUtil from "@/utils/FileUtil";
 import ConvertAllMenu from "./ConvertAllMenu";
+import ConvertFile from "@/utils/ConvertFIle";
+import loadFfmpeg from "@/utils/LoadFfmpeg";
 
 const MAX_SIZE = parseInt(import.meta.env.VITE_MAX_FILE_SIZE, 10) * 1024 * 1024; // Convert MB to bytes
 const MAX_FILES = parseInt(import.meta.env.VITE_MAX_FILES, 10);
@@ -17,6 +25,8 @@ function Convert({ isDarkMode }) {
   const [files, setFiles] = useState([]);
   const [fileLimitError, setFileLimitError] = useState("");
   const [fileSizeError, setFileSizeError] = useState("");
+  const [isFfmpegLoaded, setIsFfmpegLoaded] = useState(false);
+  const ffmpegRef = useRef(null);
 
   const allowedFileTypes = useMemo(() => fileUtil.getAllowedFileTypes(), []);
   const allowedMimeTypes = useMemo(() => fileUtil.getMimeTypes(), []);
@@ -27,6 +37,7 @@ function Convert({ isDarkMode }) {
       const filesToAdd = Array.from(newFiles).slice(0, remainingSlots);
 
       const processedFiles = filesToAdd.map((file) => ({
+        file: file,
         name: file.name,
         size: file.size,
         type: file.type,
@@ -41,8 +52,18 @@ function Convert({ isDarkMode }) {
   );
 
   const handleConvert = () => {
-    console.log("Converting files:", files);
+    
   };
+
+  const load = async () => {
+    const ffmpeg_response = await loadFfmpeg();
+    ffmpegRef.current = ffmpeg_response;
+    setIsFfmpegLoaded(true);
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
 
   return (
     <div className="space-y-6 mt-6">
@@ -89,7 +110,7 @@ function Convert({ isDarkMode }) {
                     ? "bg-red-600 hover:bg-red-700"
                     : "bg-red-500 hover:bg-red-600"
                 } text-white`}
-                disabled={files.length === 0}
+                disabled={files.length === 0 && !isFfmpegLoaded}
               >
                 Convert <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
