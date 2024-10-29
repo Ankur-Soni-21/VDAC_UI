@@ -9,11 +9,40 @@ export default function FileUpload({
   isDarkMode,
   handleFileChange,
   maxFiles,
+  maxSize,
   currentFileCount,
-  errorMessage,
+  setFileLimitError,
+  setFileSizeError,
   allowedFileTypes,
   allowedMimeTypes,
+  fileLimitError,
+  fileSizeError
 }) {
+  const handleFileSelect = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    const remainingSlots = maxFiles - currentFileCount;
+    const filesToAdd = selectedFiles.slice(0, remainingSlots);
+    const rejectedFiles = selectedFiles.length - filesToAdd.length;
+
+    const validFiles = filesToAdd.filter((file) => file.size <= maxSize);
+
+    handleFileChange(validFiles);
+
+    if (rejectedFiles > 0) {
+      setFileLimitError(
+        `Only ${filesToAdd.length} file(s) were added. ${rejectedFiles} file(s) were rejected as the maximum limit of ${maxFiles} files has been reached.`
+      );
+      setTimeout(() => setFileLimitError(""), 7000);
+    }
+
+    if (validFiles.length < filesToAdd.length) {
+      setFileSizeError(
+        `Some files were rejected because they exceed the maximum size of ${maxSize / (1024 * 1024)} MB.`
+      );
+      setTimeout(() => setFileSizeError(""), 7000);
+    }
+  };
+
   return (
     <div className="space-y-4 w-full">
       <div className="space-y-2 w-full sm:w-auto">
@@ -40,21 +69,23 @@ export default function FileUpload({
           id="file-upload"
           type="file"
           multiple
-          onChange={(e) => {
-            const selectedFiles = Array.from(e.target.files).filter((file) =>
-              allowedMimeTypes.includes(file.type)
-            );
-            handleFileChange(selectedFiles);
-          }}
+          onChange={handleFileSelect}
           className="hidden"
           accept={allowedFileTypes.join(",")}
         />
       </div>
-      {errorMessage && (
+      {fileLimitError && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>File Upload Limit</AlertTitle>
-          <AlertDescription>{errorMessage}</AlertDescription>
+          <AlertDescription>{fileLimitError}</AlertDescription>
+        </Alert>
+      )}
+      {fileSizeError && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>File Size Limit</AlertTitle>
+          <AlertDescription>{fileSizeError}</AlertDescription>
         </Alert>
       )}
     </div>

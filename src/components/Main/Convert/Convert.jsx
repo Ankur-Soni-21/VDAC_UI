@@ -1,21 +1,22 @@
 // Convert.jsx
 import React, { useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Container } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import FileUpload from "./FileUpload";
 import DragAndDrop from "./DragAndDrop";
 import FileList from "./FileList";
 import FileUtil from "@/utils/FileUtil";
 import ConvertAllMenu from "./ConvertAllMenu";
 
-
+const MAX_SIZE = parseInt(import.meta.env.VITE_MAX_FILE_SIZE, 10) * 1024 * 1024; // Convert MB to bytes
 const MAX_FILES = parseInt(import.meta.env.VITE_MAX_FILES, 10);
 
 const fileUtil = new FileUtil();
 
 function Convert({ isDarkMode }) {
   const [files, setFiles] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [fileLimitError, setFileLimitError] = useState("");
+  const [fileSizeError, setFileSizeError] = useState("");
 
   const allowedFileTypes = useMemo(() => fileUtil.getAllowedFileTypes(), []);
   const allowedMimeTypes = useMemo(() => fileUtil.getMimeTypes(), []);
@@ -24,7 +25,6 @@ function Convert({ isDarkMode }) {
     (newFiles) => {
       const remainingSlots = MAX_FILES - files.length;
       const filesToAdd = Array.from(newFiles).slice(0, remainingSlots);
-      const rejectedFiles = newFiles.length - filesToAdd.length;
 
       const processedFiles = filesToAdd.map((file) => ({
         name: file.name,
@@ -33,20 +33,15 @@ function Convert({ isDarkMode }) {
         convertTo: "",
       }));
 
-      setFiles((prevFiles) => [...prevFiles, ...processedFiles]);
+      const validFiles = processedFiles.filter((file) => file.size <= MAX_SIZE);
 
-      if (rejectedFiles > 0) {
-        setErrorMessage(
-          `Only ${filesToAdd.length} file(s) were added. ${rejectedFiles} file(s) were rejected as the maximum limit of ${MAX_FILES} files has been reached.`
-        );
-        setTimeout(() => setErrorMessage(""), 7000);
-      }
+      setFiles((prevFiles) => [...prevFiles, ...validFiles]);
     },
     [files]
   );
 
   const handleConvert = () => {
-    // console.log("Converting files:", files);
+    console.log("Converting files:", files);
   };
 
   return (
@@ -56,8 +51,12 @@ function Convert({ isDarkMode }) {
           isDarkMode={isDarkMode}
           handleFileChange={handleFileChange}
           maxFiles={MAX_FILES}
+          maxSize={MAX_SIZE}
           currentFileCount={files.length}
-          errorMessage={errorMessage}
+          fileLimitError={fileLimitError}
+          fileSizeError={fileSizeError}
+          setFileLimitError={setFileLimitError}
+          setFileSizeError={setFileSizeError}
           allowedFileTypes={allowedFileTypes}
           allowedMimeTypes={allowedMimeTypes}
         />
@@ -67,8 +66,12 @@ function Convert({ isDarkMode }) {
             isDarkMode={isDarkMode}
             handleFileChange={handleFileChange}
             maxFiles={MAX_FILES}
+            maxSize={MAX_SIZE}
+            fileLimitError={fileLimitError}
+            fileSizeError={fileSizeError}
             currentFileCount={files.length}
-            errorMessage={errorMessage}
+            setFileLimitError={setFileLimitError}
+            setFileSizeError={setFileSizeError}
             allowedFileTypes={allowedFileTypes}
             allowedMimeTypes={allowedMimeTypes}
           />
