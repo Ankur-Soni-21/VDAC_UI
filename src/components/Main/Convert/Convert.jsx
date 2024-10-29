@@ -1,128 +1,99 @@
-import React, { useState, useCallback } from "react";
+// Convert.jsx
+import React, { useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Plus, ArrowRight, Upload } from "lucide-react";
+import { ArrowRight, Container } from "lucide-react";
+import FileUpload from "./FileUpload";
+import DragAndDrop from "./DragAndDrop";
 import FileList from "./FileList";
+import FileUtil from "@/utils/FileUtil";
+import ConvertAllMenu from "./ConvertAllMenu";
+
+
+const MAX_FILES = parseInt(import.meta.env.VITE_MAX_FILES, 10);
+
+const fileUtil = new FileUtil();
 
 function Convert({ isDarkMode }) {
   const [files, setFiles] = useState([]);
-  const [isDragging, setIsDragging] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleFileChange = (newFiles) => {
-    const processedFiles = Array.from(newFiles).map((file) => ({
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      convertTo: "",
-    }));
-    setFiles([...files, ...processedFiles]);
-  };
+  const allowedFileTypes = useMemo(() => fileUtil.getAllowedFileTypes(), []);
+  const allowedMimeTypes = useMemo(() => fileUtil.getMimeTypes(), []);
+
+  const handleFileChange = useCallback(
+    (newFiles) => {
+      const remainingSlots = MAX_FILES - files.length;
+      const filesToAdd = Array.from(newFiles).slice(0, remainingSlots);
+      const rejectedFiles = newFiles.length - filesToAdd.length;
+
+      const processedFiles = filesToAdd.map((file) => ({
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        convertTo: "",
+      }));
+
+      setFiles((prevFiles) => [...prevFiles, ...processedFiles]);
+
+      if (rejectedFiles > 0) {
+        setErrorMessage(
+          `Only ${filesToAdd.length} file(s) were added. ${rejectedFiles} file(s) were rejected as the maximum limit of ${MAX_FILES} files has been reached.`
+        );
+        setTimeout(() => setErrorMessage(""), 7000);
+      }
+    },
+    [files]
+  );
 
   const handleConvert = () => {
-    console.log("Converting files:", files);
+    // console.log("Converting files:", files);
   };
-
-  const handleDragEnter = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  }, []);
-
-  const handleDragLeave = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  }, []);
-
-  const handleDragOver = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }, []);
-
-  const handleDrop = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-    const droppedFiles = Array.from(e.dataTransfer.files);
-    handleFileChange(droppedFiles);
-  }, []);
 
   return (
     <div className="space-y-6 mt-6">
       {files.length === 0 ? (
-        <div
-          className={`flex flex-col items-center justify-center space-y-4 p-12 border-2 border-dashed rounded-lg transition-colors ${
-            isDarkMode
-              ? "bg-gray-800 border-gray-600"
-              : "bg-gray-100 border-gray-300"
-          } ${isDragging ? "border-blue-500" : ""}`}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
-          <Label
-            htmlFor="file-upload"
-            className={`text-lg ${
-              isDarkMode ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            Drag & Drop Files or Click to Upload
-          </Label>
-          <Button
-            onClick={() => document.getElementById("file-upload").click()}
-            className={`px-8 py-6 text-lg ${
-              isDarkMode
-                ? "bg-[#3c3c3c] hover:bg-[#4c4c4c]"
-                : "bg-[#3c3c3c] hover:bg-[#4c4c4c]"
-            } text-white`}
-            size="lg"
-          >
-            <Upload className="mr-2 h-6 w-6" />
-            Add Files
-          </Button>
-        </div>
+        <DragAndDrop
+          isDarkMode={isDarkMode}
+          handleFileChange={handleFileChange}
+          maxFiles={MAX_FILES}
+          currentFileCount={files.length}
+          errorMessage={errorMessage}
+          allowedFileTypes={allowedFileTypes}
+          allowedMimeTypes={allowedMimeTypes}
+        />
       ) : (
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end space-y-4 sm:space-y-0">
-          <div className="space-y-2 w-full sm:w-auto">
-            <Label
-              htmlFor="file-upload"
-              className={isDarkMode ? "text-gray-300 mr-4" : "mr-4"}
-            >
-              Upload Files
-            </Label>
-            <Button
-              onClick={() => document.getElementById("file-upload").click()}
-              className={`w-full  sm:w-auto ${
-                isDarkMode ? "bg-[#3c3c3c] hover:bg-[#4c4c4c]" : ""
-              }`}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add More Files
-            </Button>
+        <div className="flex flex-col sm:flex-row w-full justify-between items-start sm:items-end space-y-4 sm:space-y-0">
+          <FileUpload
+            isDarkMode={isDarkMode}
+            handleFileChange={handleFileChange}
+            maxFiles={MAX_FILES}
+            currentFileCount={files.length}
+            errorMessage={errorMessage}
+            allowedFileTypes={allowedFileTypes}
+            allowedMimeTypes={allowedMimeTypes}
+          />
+          <div className="flex flex-col sm:flex-row w-full sm:gap-2 justify-end items-start sm:items-end space-y-4 sm:space-y-0">
+            <ConvertAllMenu
+              files={files}
+              setFiles={setFiles}
+              isDarkMode={isDarkMode}
+            />
+            <div className="flex space-x-2 w-full sm:w-auto">
+              <Button
+                onClick={handleConvert}
+                className={`w-full ${
+                  isDarkMode
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-red-500 hover:bg-red-600"
+                } text-white`}
+                disabled={files.length === 0}
+              >
+                Convert <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
           </div>
-
-          <Button
-            onClick={handleConvert}
-            className={`w-full sm:w-auto ${
-              isDarkMode
-                ? "bg-red-600 hover:bg-red-700"
-                : "bg-red-500 hover:bg-red-600"
-            } text-white`}
-          >
-            Convert <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
         </div>
       )}
-
-      <Input
-        id="file-upload"
-        type="file"
-        multiple
-        onChange={(e) => handleFileChange(e.target.files)}
-        className="hidden"
-      />
 
       {files.length > 0 && (
         <FileList files={files} setFiles={setFiles} isDarkMode={isDarkMode} />

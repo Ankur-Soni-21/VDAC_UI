@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { X, File, ChevronDown } from "lucide-react";
+import { X, MoreHorizontal } from "lucide-react";
 import SelectMenu from "./SelectMenu";
+import FileUtil from "@/utils/FileUtil";
+const fileUtil = new FileUtil();
 
 function FileList({ files, setFiles, isDarkMode }) {
   const [activeFileIndex, setActiveFileIndex] = useState(null);
@@ -21,6 +23,10 @@ function FileList({ files, setFiles, isDarkMode }) {
     setActiveFileIndex(null);
   };
 
+  const toggleSelectMenu = (index) => {
+    setActiveFileIndex((prevIndex) => (prevIndex === index ? null : index));
+  };
+
   return (
     <div className={`rounded-md ${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`}>
       {files.map((file, index) => (
@@ -36,7 +42,7 @@ function FileList({ files, setFiles, isDarkMode }) {
                 isDarkMode ? "bg-gray-700" : "bg-gray-300"
               }`}
             >
-              <File className="h-4 w-4" />
+              📄
             </div>
             <div>
               <p
@@ -57,9 +63,7 @@ function FileList({ files, setFiles, isDarkMode }) {
           </div>
           <div className="flex items-center space-x-2">
             <button
-              onClick={() =>
-                setActiveFileIndex(activeFileIndex === index ? null : index)
-              }
+              onClick={() => toggleSelectMenu(index)}
               className={`px-3 py-1 rounded flex items-center ${
                 isDarkMode
                   ? "bg-gray-700 text-gray-100"
@@ -67,9 +71,9 @@ function FileList({ files, setFiles, isDarkMode }) {
               }`}
             >
               <span className="mr-2">
-                {file.convertTo ? file.convertTo.toUpperCase() : "..."}
+                {file.convertTo ? file.convertTo.toUpperCase() : "Select"}
               </span>
-              <ChevronDown className="h-4 w-4" />
+              <MoreHorizontal className="h-4 w-4" />
             </button>
             <button
               onClick={() => removeFile(index)}
@@ -86,6 +90,7 @@ function FileList({ files, setFiles, isDarkMode }) {
                 onFormatSelect={(format) => handleFormatSelect(index, format)}
                 onClickOutside={handleClickOutside}
                 isDarkMode={isDarkMode}
+                fileType={file.type}
               />
             </div>
           )}
