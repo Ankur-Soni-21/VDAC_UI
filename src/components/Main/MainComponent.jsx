@@ -12,7 +12,7 @@ import ConvertComponent from "./Convert/Convert";
 import TranscribeComponent from "./Transcribe/Transcribe";
 import Faq from "./Faq";
 
-function Main({ isDarkMode, activeTab, setActiveTab }) {
+function MainComponent({ isDarkMode, activeTab, setActiveTab }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleTabChange = (newTab) => {
@@ -98,4 +98,4 @@ function Main({ isDarkMode, activeTab, setActiveTab }) {
   );
 }
 
-export default Main;
+export default MainComponent;
