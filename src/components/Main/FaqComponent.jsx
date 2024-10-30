@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import React from "react";
 
-function Faq({isDarkMode}) {
+function FaqComponent({isDarkMode}) {
   return (
     <Card className={isDarkMode ? "bg-[#1c1c1c] text-gray-100" : ""}>
       <CardHeader>
@@ -41,4 +41,4 @@ function Faq({isDarkMode}) {
   );
 }
 
-export default Faq;
+export default FaqComponent;
