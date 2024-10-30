@@ -18,6 +18,7 @@ import JSZip from "jszip";
 
 const MAX_SIZE = parseInt(import.meta.env.VITE_MAX_FILE_SIZE, 10) * 1024 * 1024;
 const MAX_FILES = parseInt(import.meta.env.VITE_MAX_FILES, 10);
+const TIMEOUT_RACE = parseInt(import.meta.env.VITE_TIMEOUT_RACE) || 5000;
 
 const fileUtil = new FileUtil();
 
@@ -56,11 +57,11 @@ function Convert({ isDarkMode }) {
     [files]
   );
 
-  const convertFileWithTimeout = (file, targetFormat, ffmpeg, timeout = 3000) => {
+  const convertFileWithTimeout = (file, targetFormat, ffmpeg) => {
     return Promise.race([
       ConvertFile(file, targetFormat, ffmpeg),
       new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Conversion timed out")), timeout)
+        setTimeout(() => reject(new Error("Conversion timed out")),TIMEOUT_RACE)
       ),
     ]);
   };
