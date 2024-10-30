@@ -1,5 +1,6 @@
 // ConvertFile.js
 import { fetchFile } from "@ffmpeg/util";
+const TIMEOUT_FFMPEG = parseInt(import.meta.env.VITE_TIMEOUT_FFMPEG) || 5000;
 
 function removeFileExtension(fileName) {
     const lastDotIndex = fileName.lastIndexOf('.');
@@ -40,7 +41,7 @@ export default async function ConvertFile(file, newFormat, ffmpeg) {
         // Execute the conversion with timeout
         const ffmpeg_cmd = ['-i', input, output];
         console.log("Input file:", input);
-        await ffmpeg.exec(ffmpeg_cmd, 5000);
+        await ffmpeg.exec(ffmpeg_cmd, TIMEOUT_FFMPEG);
 
         // Read the output file
         const data = await ffmpeg.readFile(output);
