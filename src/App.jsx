@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Header from "./components/Header/HeaderComponent";
-import Main from "./components/Main/MainComponent";
-import Footer from "./components/Footer/FooterComponent";
+import HeaderComponent from "./components/Header/HeaderComponent";
+import MainComponent from "./components/Main/MainComponent";
+import FooterComponent from "./components/Footer/FooterComponent";
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -17,13 +17,13 @@ function App() {
         isDarkMode ? "bg-[#0c0c0c] text-gray-100" : "bg-white text-gray-900"
       }`}
     >
-      <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
-      <Main
+      <HeaderComponent isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+      <MainComponent
         isDarkMode={isDarkMode}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
-      <Footer isDarkMode={isDarkMode} />
+      <FooterComponent isDarkMode={isDarkMode} />
     </div>
   );
 }

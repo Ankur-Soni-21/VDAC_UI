@@ -10,7 +10,7 @@ import {
 import DownloadComponent from "./Download/Download";
 import ConvertComponent from "./Convert/Convert";
 import TranscribeComponent from "./Transcribe/Transcribe";
-import Faq from "./Faq";
+import FaqComponent from "./FaqComponent";
 
 function MainComponent({ isDarkMode, activeTab, setActiveTab }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -93,7 +93,7 @@ function MainComponent({ isDarkMode, activeTab, setActiveTab }) {
         </div>
       )}
       <div className="flex-grow"></div>
-      <Faq isDarkMode={isDarkMode} />
+      <FaqComponent isDarkMode={isDarkMode} />
     </main>
   );
 }
