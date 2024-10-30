@@ -111,6 +111,7 @@ export default function DragAndDrop({
           type="file"
           multiple
           onChange={(e) => {
+            // console.log(e.target.files.item(0).arrayBuffer());
             const files = Array.from(e.target.files).filter(
               (file) => file.size <= maxSize && allowedMimeTypes.includes(file.type)
             );
