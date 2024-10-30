@@ -7,9 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import DownloadComponent from "./Download/Download";
-import ConvertComponent from "./Convert/Convert";
-import TranscribeComponent from "./Transcribe/Transcribe";
+import DownloadComponent from "./Download/DownloadComponent";
+import ConvertComponent from "./Convert/ConvertComponent";
+import TranscribeComponent from "./Transcribe/TranscribeComponent";
 import FaqComponent from "./FaqComponent";
 
 function MainComponent({ isDarkMode, activeTab, setActiveTab }) {

@@ -12,7 +12,7 @@ import DragAndDrop from "./DragAndDrop";
 import FileList from "./FileList";
 import FileUtil from "@/utils/FileUtil";
 import ConvertAllMenu from "./ConvertAllMenu";
-import ConvertFile from "@/utils/ConvertFile";
+import ConvertFile from "@/utils/FfmpegConvert";
 import loadFfmpeg from "@/utils/LoadFfmpeg";
 import JSZip from "jszip";
 
@@ -22,7 +22,7 @@ const TIMEOUT_RACE = parseInt(import.meta.env.VITE_TIMEOUT_RACE) || 5000;
 
 const fileUtil = new FileUtil();
 
-function Convert({ isDarkMode }) {
+function ConvertComponent({ isDarkMode }) {
   const [files, setFiles] = useState([]);
   const [fileLimitError, setFileLimitError] = useState("");
   const [fileSizeError, setFileSizeError] = useState("");
@@ -279,4 +279,4 @@ function Convert({ isDarkMode }) {
   );
 }
 
-export default Convert;
+export default ConvertComponent;
