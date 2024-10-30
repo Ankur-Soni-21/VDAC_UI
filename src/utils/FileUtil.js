@@ -1,42 +1,29 @@
 class FileUtil {
     #fileCategories = {
-        Document: ['PDF', 'DOC', 'DOCX', 'TXT', 'RTF', 'ODT'],
-        Presentation: ['PPT', 'PPTX', 'ODP', 'KEY'],
-        Images: ['PNG', 'JPEG', 'JPG', 'GIF', 'TIFF', 'WEBP'],
-        'Audio & Video': ['MP3', 'WAV', 'AAC', 'FLAC', 'MP4', 'AVI', 'MOV', 'WEBM'],
+        Images: ['PNG', 'JPEG', 'GIF', 'TIFF', 'WEBP', 'BMP'],
+        Audio: ['MP3', 'WAV', 'FLAC'],
+        Video: ['MP4', 'MOV', 'WEBM'],
     };
 
     #conversionRules = {
-        Document: ['Document', 'Presentation'],
-        Presentation: ['Document', 'Presentation'],
         Images: ['Images'],
-        'Audio & Video': ['Audio & Video'],
+        Audio: ['Audio', 'Video'],
+        Video: ['Video', 'Audio'],
     };
 
     #mimeMap = {
-        'PDF': 'application/pdf',
-        'DOC': 'application/msword',
-        'DOCX': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'TXT': 'text/plain',
-        'RTF': 'application/rtf',
-        'ODT': 'application/vnd.oasis.opendocument.text',
-        'PPT': 'application/vnd.ms-powerpoint',
-        'PPTX': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-        'ODP': 'application/vnd.oasis.opendocument.presentation',
-        'KEY': 'application/x-iwork-keynote-sffkey',
         'PNG': 'image/png',
         'JPEG': 'image/jpeg',
-        'JPG': 'image/jpeg',
         'GIF': 'image/gif',
         'TIFF': 'image/tiff',
         'BMP': 'image/bmp',
         'WEBP': 'image/webp',
+
         'MP3': 'audio/mpeg',
         'WAV': 'audio/wav',
-        'AAC': 'audio/aac',
         'FLAC': 'audio/flac',
+
         'MP4': 'video/mp4',
-        'AVI': 'video/x-msvideo',
         'MOV': 'video/quicktime',
         'WEBM': 'video/webm',
     };
@@ -95,6 +82,4 @@ class FileUtil {
         return commonCategories || [];
     }
 }
-const fileUtil = new FileUtil();
-console.log(fileUtil.getCommonCategories( [{ name: 'file.pptx' }]));
 export default FileUtil;

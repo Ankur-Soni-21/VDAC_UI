@@ -16,7 +16,7 @@ const loadFfmpeg = async () => {
             "text/javascript"
         ),
     });
-    console.log("FFmpeg loaded");
+    // console.log("FFmpeg loaded");
     return ffmpeg;
 };
 
