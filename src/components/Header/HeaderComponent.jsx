@@ -4,7 +4,7 @@ import { Moon, Sun } from "lucide-react";
 import logoBlackTransparent from "../../assets/logoBlackTransparent.svg";
 import logoWhiteTransparent from "../../assets/logoWhiteTransparent.svg";
 
-function Header({ isDarkMode, toggleTheme }) {
+function HeaderComponent({ isDarkMode, toggleTheme }) {
   return (
     <header
       className={`border-b ${
@@ -32,4 +32,4 @@ function Header({ isDarkMode, toggleTheme }) {
   );
 }
 
-export default Header;
+export default HeaderComponent;

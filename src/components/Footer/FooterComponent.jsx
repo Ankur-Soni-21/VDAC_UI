@@ -1,6 +1,6 @@
 import React from "react";
 
-function Footer({ isDarkMode }) {
+function FooterComponent({ isDarkMode }) {
   return (
     <footer
       className={`border-t mt-4 ${
@@ -21,4 +21,4 @@ function Footer({ isDarkMode }) {
   );
 }
 
-export default Footer;
+export default FooterComponent;
