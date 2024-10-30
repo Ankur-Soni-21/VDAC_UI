@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 src/PROMPT.TXT
+.env
 
 # Editor directories and files
 .vscode/*
