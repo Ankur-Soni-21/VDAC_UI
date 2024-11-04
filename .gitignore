@@ -13,7 +13,7 @@ dist-ssr
 *.local
 src/PROMPT.TXT
 .env
-vercel.json
+# vercel.json
 
 # Editor directories and files
 .vscode/*
