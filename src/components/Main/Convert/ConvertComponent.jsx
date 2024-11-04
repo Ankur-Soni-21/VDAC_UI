@@ -171,6 +171,7 @@ function ConvertComponent({ isDarkMode }) {
 
   const load = async () => {
     const ffmpeg_response = await loadFfmpeg();
+    if(ffmpeg_response === null) console.log("Error loading ffmpeg");
     ffmpegRef.current = ffmpeg_response;
     setIsFfmpegLoaded(true);
   };
